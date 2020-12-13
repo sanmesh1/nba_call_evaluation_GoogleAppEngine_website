@@ -1,0 +1,24 @@
+create table main_referee(
+gameId VARCHAR(255),
+date VARCHAR(255),
+link_2minreport VARCHAR(255),
+home_team VARCHAR(255),
+away_team VARCHAR(255),
+home_team_score VARCHAR(255),
+away_team_score VARCHAR(255),
+call_type VARCHAR(255),
+committing_player VARCHAR(255),
+committing_team VARCHAR(255),
+disadvantaged_player VARCHAR(255),
+disadvantaged_team VARCHAR(255),
+review_decision VARCHAR(255),
+video_link VARCHAR(255),
+comment VARCHAR(255),
+PRIMARY KEY(gameId)
+);
+
+gameId, date, link_2minreport, 
+home_team, away_team, home_team_score, 
+away_team_score, call_type, committing_player, 
+committing_team, disadvantaged_player, disadvantaged_team,
+review_decision, video_link, comment

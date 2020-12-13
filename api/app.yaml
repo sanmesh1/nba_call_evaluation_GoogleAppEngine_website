@@ -1,0 +1,8 @@
+#app.yaml
+runtime: python37
+
+env_variables:
+  CLOUD_SQL_USERNAME: root
+  CLOUD_SQL_PASSWORD: 9Sanmesh4!!
+  CLOUD_SQL_DATABASE_NAME: nba_referee_db
+  CLOUD_SQL_CONNECTION_NAME: original-spider-273806:us-central1:a
