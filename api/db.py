@@ -56,21 +56,23 @@ def get_game_referee_info():
     
 def add_game_referee_info(game_referee_data_point):
     conn = open_connection()
-    num_fields = 15
+    num_fields = 18
     variable_string = 'VALUES('+'%s, ' * (num_fields-1)+ '%s)'
     temp = ("INSERT INTO main_referee "
-      "(gameId, date, link_2minreport, "
-      "home_team, away_team, home_team_score, "
-      "away_team_score, call_type, committing_player, " 
+      "(GameId, GameDate, link_2minreport, "
+      "Home_team, Away_team, HomeTeamScore, "
+      "VisitorTeamScore, CallType, committing_player, " 
       "committing_team, disadvantaged_player, disadvantaged_team, "
-      "review_decision, video_link, comment) "
+      "review_decision, video_link, comment, "
+      "season, Difficulty, PCTime) "
     ) + variable_string
     with conn.cursor() as cursor:
-        cursor.execute(temp, (game_referee_data_point["gameId"], game_referee_data_point["date"], game_referee_data_point["link_2minreport"],
-        game_referee_data_point["home_team"],game_referee_data_point["away_team"],game_referee_data_point["home_team_score"],
-        game_referee_data_point["away_team_score"],game_referee_data_point["call_type"],game_referee_data_point["committing_player"],
+        cursor.execute(temp, (game_referee_data_point["GameId"], game_referee_data_point["GameDate"], game_referee_data_point["link_2minreport"],
+        game_referee_data_point["Home_team"],game_referee_data_point["Away_team"],game_referee_data_point["HomeTeamScore"],
+        game_referee_data_point["VisitorTeamScore"],game_referee_data_point["CallType"],game_referee_data_point["committing_player"],
         game_referee_data_point["committing_team"],game_referee_data_point["disadvantaged_player"],game_referee_data_point["disadvantaged_team"],
-        game_referee_data_point["review_decision"],game_referee_data_point["video_link"],game_referee_data_point["comment"]))
+        game_referee_data_point["review_decision"],game_referee_data_point["video_link"],game_referee_data_point["comment"],
+        game_referee_data_point["season"],game_referee_data_point["Difficulty"],game_referee_data_point["PCTime"]))
     conn.commit()
     conn.close()
     
