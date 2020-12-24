@@ -1,12 +1,28 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
+import SortingTableComponent from './components/basic.table';
+
 
 class RefereeingUI extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			jsonOutputObject:null,
+			jsonOutputObject: [{
+				"Committing_CC": 0,
+				"Committing_CNC": 0,
+				"Committing_IC": 0,
+				"Committing_INC": 2,
+				"Disadvantaged_CC": 9,
+				"Disadvantaged_CNC": 16,
+				"Disadvantaged_IC": 1,
+				"Disadvantaged_INC": 1,
+				"PlayerName": "Aaron Gordon",
+				"num_errors_against": 1,
+				"num_errors_in_favor": 3,
+				"percent_errors_against": 1.82,
+				"percent_errors_in_favor": 5.45
+			}],
 			counter: 0,
 			teamOrPlayer: "Player",
 			teamOrPlayerName: "",
@@ -25,7 +41,7 @@ class RefereeingUI extends React.Component {
 		this.setState({teamOrPlayer: event.target.value});
 	}
 	callApi(){
-		const apiUrl = 'https://original-spider-273806.ue.r.appspot.com/get_data';
+		const apiUrl = 'https://original-spider-273806.ue.r.appspot.com/get_player_referee_accuracies_data';
 		fetch(apiUrl)
 		.then((response) => 
 		response.json()
@@ -34,8 +50,8 @@ class RefereeingUI extends React.Component {
 			console.log('This is your data', data);
 			console.log(typeof data);
 			console.log(Object.getOwnPropertyNames(data));
-			console.log(data[0].gameId);
-			console.log(typeof data[0].gameId);
+			// console.log(data[0].gameId);
+			// console.log(typeof data[0].gameId);
 			this.setState({jsonOutputObject: data,
 			counter: this.state.counter+1,
 			});
@@ -45,6 +61,10 @@ class RefereeingUI extends React.Component {
   render() {
 	return (
 		<div className="Parent">
+			<div className="table">
+				<h3>Basic Table using <code>react-table</code></h3>
+				<SortingTableComponent data={this.state.jsonOutputObject}/>
+			</div>
 			<div className="RefereeingInput">
 				{/*
 				<h1> {this.state.text} </h1>
