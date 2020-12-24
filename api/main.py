@@ -50,6 +50,23 @@ def delete_data(filter_type = None, filter_param = None):
         return jsonify({"msg": "Missing one of params"}), 400
     isSuccessful = delete_data_db(filter_type, filter_param)  
     return 'Deletion of particular data'
+
+@app.route('/get_player_referee_accuracies_data', methods=['GET'])
+def get_player_referee_accuracies_data():
+    return get_player_referee_accuracies_data_db()
+    
+@app.route('/post_player_referee_accuracies_data', methods=['POST'])
+def post_player_referee_accuracies_data():
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400  
+
+    post_player_referee_accuracies_data_db(request.get_json())
+    return 'player data Added'
+    
+@app.route('/delete_player_referee_accuracies_data', methods=['DELETE'])
+def delete_player_referee_accuracies_data():
+    isSuccessful = delete_player_referee_accuracies_data_db()
+    return 'Deletion of all data'   
     
 if __name__ == '__main__':
     app.run()

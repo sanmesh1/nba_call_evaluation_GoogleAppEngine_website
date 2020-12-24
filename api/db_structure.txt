@@ -1,12 +1,13 @@
-create table main_referee(
-gameId VARCHAR(255),
-date VARCHAR(255),
+create table main_refereeV3(
+UniqueIdPlay VARCHAR(255),
+GameId INT UNSIGNED,
+GameDate VARCHAR(255),
 link_2minreport VARCHAR(255),
-home_team VARCHAR(255),
-away_team VARCHAR(255),
-home_team_score VARCHAR(255),
-away_team_score VARCHAR(255),
-call_type VARCHAR(255),
+Home_team VARCHAR(255),
+Away_team VARCHAR(255),
+HomeTeamScore INT UNSIGNED,
+VisitorTeamScore INT UNSIGNED,
+CallType VARCHAR(255),
 committing_player VARCHAR(255),
 committing_team VARCHAR(255),
 disadvantaged_player VARCHAR(255),
@@ -14,7 +15,74 @@ disadvantaged_team VARCHAR(255),
 review_decision VARCHAR(255),
 video_link VARCHAR(255),
 comment VARCHAR(255),
-PRIMARY KEY(gameId)
+season VARCHAR(255),
+Difficulty VARCHAR(255),
+PCTime VARCHAR(255),
+PRIMARY KEY(UniqueIdPlay)
+);
+
+create table player_referee_accuracies(
+PlayerName VARCHAR(255),
+Committing_CC INT UNSIGNED,
+Committing_IC INT UNSIGNED,
+Committing_CNC INT UNSIGNED,
+Committing_INC INT UNSIGNED,
+Disadvantaged_CC INT UNSIGNED,
+Disadvantaged_IC INT UNSIGNED,
+Disadvantaged_CNC INT UNSIGNED,
+Disadvantaged_INC INT UNSIGNED,
+num_errors_in_favor INT UNSIGNED,
+percent_errors_in_favor FLOAT(2),
+num_errors_against INT UNSIGNED,
+percent_errors_against FLOAT(2),
+PRIMARY KEY(PlayerName)
+);
+
+create table player_call_breakdown(
+UniqueIdPlayer VARCHAR(255),
+Foul: Personal
+Foul: Shooting
+Foul: Offensive
+Foul: Loose Ball
+Turnover: 24 Second Violation
+Foul: Away from Play
+Turnover: Discontinue Dribble
+Violation: Defensive Goaltending
+Turnover: 3 Second Violation
+Turnover: Traveling
+Foul: Personal Take
+Turnover:  Out of Bounds - Bad Pass Turn
+Turnover: Out of Bounds
+Foul: Defense 3 Second
+Turnover: Double Dribble
+Turnover: Lost Ball Out of Bounds
+N/A
+Violation: Delay of Game
+Violation: Kicked Ball
+Stoppage: Out-of-Bounds
+Turnover: Backcourt Turnover
+Foul: Double Technical
+Turnover: Palming
+Turnover: Stepped out of Bounds
+Violation: Double Lane
+Turnover: 8 Second Violation
+Turnover: Inbound Turnover
+Turnover: 5 Second Inbound
+Turnover: 5 Second Violation
+Turnover: Jump Ball Violation
+Turnover: Foul
+Instant Replay: Support Ruling
+Foul: Clear Path
+Turnover: Offensive Goaltending
+Turnover: Lane Violation
+Violation: Lane
+Foul: Technical
+Instant Replay: Overturn Ruling
+Turnover: Bad Pass
+Foul: Personal Block
+Foul: Flagrant Type 1
+Foul: Delay Technical
+Turnover: Illegal Screen
 );
 
 gameId, date, link_2minreport, 
@@ -22,3 +90,48 @@ home_team, away_team, home_team_score,
 away_team_score, call_type, committing_player, 
 committing_team, disadvantaged_player, disadvantaged_team,
 review_decision, video_link, comment
+
+
+{
+	"UniqueIdPlay": "123",
+	"GameId": "543432",
+	"GameDate": "2019-11-15T00:00:00",
+	"link_2minreport" : "",
+	"Home_team": "",
+	"Away_team": "",
+	"HomeTeamScore": "123",
+	"VisitorTeamScore": "123",
+	"CallType": "",
+	"committing_player": "",
+	"committing_team": "",
+	"disadvantaged_player": "",
+	"disadvantaged_team": "",
+	"review_decision": "",
+	"video_link": "",
+	"comment": "",
+	"season": "",
+	"Difficulty": "",
+	"PCTime": "00:01:56"
+}
+
+{
+	"UniqueIdPlay": "123",
+	"GameId": "543432",
+	"GameDate": "2019-11-15T00:00:00",
+	"link_2minreport" : "",
+	"Home_team": "",
+	"Away_team": "",
+	"HomeTeamScore": "123",
+	"VisitorTeamScore": "123",
+	"CallType": "",
+	"committing_player": "",
+	"committing_team": "",
+	"disadvantaged_player": "",
+	"disadvantaged_team": "",
+	"review_decision": "",
+	"video_link": "",
+	"comment": "",
+	"season": "",
+	"Difficulty": "",
+	"PCTime": "00:01:56"
+}
