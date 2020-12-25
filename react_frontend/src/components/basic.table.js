@@ -1,7 +1,7 @@
 // src/components/sorting.table.js
 import React from "react";
 
-import { useTable, useSortBy } from 'react-table'
+import { useTable, useSortBy, usePagination } from 'react-table'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Table({ columns, data }) {
@@ -12,17 +12,48 @@ function Table({ columns, data }) {
         headerGroups,
         rows,
         prepareRow,
+		////////
+		page,
+        canPreviousPage,
+        canNextPage,
+        pageOptions,
+        pageCount,
+        gotoPage,
+        nextPage,
+        previousPage,
+        setPageSize,
+        state: { pageIndex, pageSize },
+		////////
     } = useTable(
         {
             columns,
             data,
+			initialState: { pageIndex: 0, pageSize: 5 },
         },
-        useSortBy
+        useSortBy,
+		usePagination
     )
 
     // Render the UI for your table
     return (
         <div>
+		{/*
+			<pre>
+                <code>
+                    {JSON.stringify(
+                        {
+                            pageIndex,
+                            pageSize,
+                            pageCount,
+                            canNextPage,
+                            canPreviousPage,
+                        },
+                        null,
+                        1
+                    )}
+                </code>
+            </pre>
+		*/}
             <table className="table" {...getTableProps()}>
                 <thead>
                     {headerGroups.map(headerGroup => (
@@ -46,7 +77,7 @@ function Table({ columns, data }) {
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                    {rows.map(
+                    {page.map(
                         (row, i) => {
                             prepareRow(row);
                             return (
@@ -64,12 +95,68 @@ function Table({ columns, data }) {
             </table>
             <br />
             <div>Showing the first 20 results of {rows.length} rows</div>
+            <ul className="pagination">
+                <li className="page-item" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                    <a className="page-link">First</a>
+                </li>
+                <li className="page-item" onClick={() => previousPage()} disabled={!canPreviousPage}>
+                    <a className="page-link">{'<'}</a>
+                </li>
+                <li className="page-item" onClick={() => nextPage()} disabled={!canNextPage}>
+                    <a className="page-link">{'>'}</a>
+                </li>
+                <li className="page-item" onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                    <a className="page-link">Last</a>
+                </li>
+                <li>
+                    <a className="page-link">
+                        Page{' '}
+                        <strong>
+                            {pageIndex + 1} of {pageOptions.length}
+                        </strong>{' '}
+                    </a>
+                </li>
+                <li>
+                    <a className="page-link">
+                        <input
+                            className="form-control"
+                            type="number"
+                            defaultValue={pageIndex + 1}
+                            onChange={e => {
+                                const page = e.target.value ? Number(e.target.value) - 1 : 0
+                                gotoPage(page)
+                            }}
+                            style={{ width: '100px', height: '20px' }}
+                        />
+                    </a>
+                </li>{' '}
+                <select
+                    className="form-control"
+                    value={pageSize}
+                    onChange={e => {
+                        setPageSize(Number(e.target.value))
+                    }}
+                    style={{ width: '120px', height: '38px' }}
+                >
+                    {[5, 10, 20, 30, 40, 50].map(pageSize => (
+                        <option key={pageSize} value={pageSize}>
+                            Show {pageSize}
+                        </option>
+                    ))}
+                </select>
+            </ul>
         </div >
     )
 }
 
 function SortingTableComponent({ data }) {
-    const columns = React.useMemo(
+    data.forEach(function (element, index, array) {
+		element.pointsLostByReferee = (element.num_errors_against - element.num_errors_in_favor) * 2;
+		if (element.PlayerName.split(' ').length ==  1 || element.PlayerName.match(/^ *$/) !== null){
+			array.splice(index, 1);
+		}
+	});
+	const columns = React.useMemo(
         () => [
             {
                 Header: 'Top Players Disadvantaged by Referees',
@@ -86,77 +173,16 @@ function SortingTableComponent({ data }) {
                         Header: '% Errors Against',
                         accessor: 'percent_errors_against',
                     },
+                    {
+                        Header: 'Points Lost To Referees',
+                        accessor: 'pointsLostByReferee',
+                    },
                 ],
             },
         ],
         []
     )
 
-    // const data = [
-        // {
-            // "firstName": "committee-c15dw",
-            // "lastName": "editor-ktsjo",
-            // "age": 3,
-            // "visits": 46,
-            // "progress": 75,
-            // "status": "relationship"
-        // },
-        // {
-            // "firstName": "midnight-wad0y",
-            // "lastName": "data-7h4xf",
-            // "age": 1,
-            // "visits": 56,
-            // "progress": 15,
-            // "status": "complicated"
-        // },
-        // {
-            // "firstName": "tree-sbdb0",
-            // "lastName": "friendship-w8535",
-            // "age": 1,
-            // "visits": 45,
-            // "progress": 66,
-            // "status": "single"
-        // },
-        // {
-            // "firstName": "chin-borr8",
-            // "lastName": "shirt-zox8m",
-            // "age": 0,
-            // "visits": 25,
-            // "progress": 67,
-            // "status": "complicated"
-        // },
-        // {
-            // "firstName": "women-83ef0",
-            // "lastName": "chalk-e8xbk",
-            // "age": 9,
-            // "visits": 28,
-            // "progress": 23,
-            // "status": "relationship"
-        // },
-        // {
-            // "firstName": "women-83ef0",
-            // "lastName": "chalk-e8xbk",
-            // "age": 9,
-            // "visits": 28,
-            // "progress": 23,
-            // "status": "relationship"
-        // },
-        // {
-            // "firstName": "women-83ef0",
-            // "lastName": "chalk-e8xbk",
-            // "age": 9,
-            // "visits": 28,
-            // "progress": 23,
-            // "status": "relationship"
-        // },
-        // {
-            // "firstName": "women-83ef0",
-            // "lastName": "chalk-e8xbk",
-            // "age": 9,
-            // "visits": 28,
-            // "progress": 23,
-            // "status": "relationship"
-        // }]
     console.log(JSON.stringify(data));
 
 

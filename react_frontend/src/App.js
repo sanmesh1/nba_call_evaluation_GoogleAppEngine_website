@@ -9,17 +9,17 @@ class RefereeingUI extends React.Component {
 		super(props);
 		this.state = {
 			jsonOutputObject: [{
-				"Committing_CC": 0,
-				"Committing_CNC": 0,
-				"Committing_IC": 0,
-				"Committing_INC": 2,
-				"Disadvantaged_CC": 9,
-				"Disadvantaged_CNC": 16,
-				"Disadvantaged_IC": 1,
-				"Disadvantaged_INC": 1,
-				"PlayerName": "Aaron Gordon",
-				"num_errors_against": 1,
-				"num_errors_in_favor": 3,
+				"Committing_CC": "",
+				"Committing_CNC": "",
+				"Committing_IC": "",
+				"Committing_INC": "",
+				"Disadvantaged_CC": "",
+				"Disadvantaged_CNC": "",
+				"Disadvantaged_IC": "",
+				"Disadvantaged_INC": "",
+				"PlayerName": "",
+				"num_errors_against": "",
+				"num_errors_in_favor": "",
 				"percent_errors_against": 1.82,
 				"percent_errors_in_favor": 5.45
 			}],
@@ -32,7 +32,19 @@ class RefereeingUI extends React.Component {
 		this.callApi = this.callApi.bind(this);
 		this.handleChangeTeamOrPlayerName = this.handleChangeTeamOrPlayerName.bind(this);
 		this.handleChangeTeamOrPlayer = this.handleChangeTeamOrPlayer.bind(this);
-		
+/////
+		const apiUrl = 'https://original-spider-273806.ue.r.appspot.com/get_player_referee_accuracies_data';
+		fetch(apiUrl)
+		.then((response) => 
+		response.json()
+		)
+		.then((data) => {
+			this.setState({jsonOutputObject: data,
+			counter: this.state.counter+1,
+			});
+		});
+
+//////	
 	}
 	handleChangeTeamOrPlayerName(event){
 		this.setState({teamOrPlayerName: event.target.value});
@@ -40,6 +52,12 @@ class RefereeingUI extends React.Component {
 	handleChangeTeamOrPlayer(event){
 		this.setState({teamOrPlayer: event.target.value});
 	}
+	
+
+	// function getDataFromApi(url) {
+		// return p1 * p2;   // The function returns the product of p1 and p2
+	// }
+	
 	callApi(){
 		const apiUrl = 'https://original-spider-273806.ue.r.appspot.com/get_player_referee_accuracies_data';
 		fetch(apiUrl)
