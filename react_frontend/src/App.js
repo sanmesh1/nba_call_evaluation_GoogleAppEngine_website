@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
+import scottFosterCp3 from './images/scottFosterCp3.jpg';
 import './App.css';
 import SortingTableComponent from './components/basic.table';
 
@@ -80,7 +81,8 @@ class RefereeingUI extends React.Component {
 	return (
 		<div className="Parent">
 			<div className="table">
-				<h3>Basic Table using <code>react-table</code></h3>
+				<h3>How much NBA players are impacted by Referees</h3>
+				< img src={scottFosterCp3} width="600" height="338" />
 				<SortingTableComponent data={this.state.jsonOutputObject}/>
 			</div>
 			<div className="RefereeingInput">

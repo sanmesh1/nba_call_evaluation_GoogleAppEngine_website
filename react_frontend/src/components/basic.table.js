@@ -1,11 +1,64 @@
 // src/components/sorting.table.js
 import React from "react";
 
-import { useTable, useSortBy, usePagination } from 'react-table'
+import { useTable, useSortBy, usePagination, useFilters, useGlobalFilter, useAsyncDebounce} from 'react-table'
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+// Define a default UI for filtering
+function GlobalFilter({
+    preGlobalFilteredRows,
+    globalFilter,
+    setGlobalFilter,
+}) {
+    const count = preGlobalFilteredRows.length
+    const [value, setValue] = React.useState(globalFilter)
+    const onChange = useAsyncDebounce(value => {
+        setGlobalFilter(value || undefined)
+    }, 200)
+
+    return (
+        <span>
+            Search Player:{' '}
+            <input
+                className="form-control"
+                value={value || ""}
+                onChange={e => {
+                    setValue(e.target.value);
+                    onChange(e.target.value);
+                }}
+                placeholder={'Enter Player Name...'}
+            />
+        </span>
+    )
+}
+
+function DefaultColumnFilter({
+    column: { filterValue, preFilteredRows, setFilter },
+}) {
+    const count = preFilteredRows.length
+
+    return (
+        <input
+            className="form-control"
+            value={filterValue || ''}
+            onChange={e => {
+                setFilter(e.target.value || undefined)
+            }}
+            placeholder={'Search ${count} records...'}
+        />
+    )
+}
 
 function Table({ columns, data }) {
     // Use the state and functions returned from useTable to build your UI
+    const defaultColumn = React.useMemo(
+        () => ({
+            // Default Filter UI
+            Filter: DefaultColumnFilter,
+        }),
+        []
+    )
+
     const {
         getTableProps,
         getTableBodyProps,
@@ -22,16 +75,21 @@ function Table({ columns, data }) {
         nextPage,
         previousPage,
         setPageSize,
-        state: { pageIndex, pageSize },
+		preGlobalFilteredRows,
+        setGlobalFilter,
+		state: { pageIndex, pageSize, globalFilter},
 		////////
     } = useTable(
         {
             columns,
             data,
+			defaultColumn,
 			initialState: { pageIndex: 0, pageSize: 5 },
         },
-        useSortBy,
-		usePagination
+		useFilters,
+        useGlobalFilter,
+		useSortBy,
+		usePagination,
     )
 
     // Render the UI for your table
@@ -54,6 +112,11 @@ function Table({ columns, data }) {
                 </code>
             </pre>
 		*/}
+		    <GlobalFilter
+                preGlobalFilteredRows={preGlobalFilteredRows}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+            />
             <table className="table" {...getTableProps()}>
                 <thead>
                     {headerGroups.map(headerGroup => (
@@ -64,11 +127,12 @@ function Table({ columns, data }) {
                                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                                     {column.render('Header')}
                                     {/* Add a sort direction indicator */}
+									{/*<div>{column.canFilter ? column.render('Filter') : null}</div> */}
                                     <span>
                                         {column.isSorted
                                             ? column.isSortedDesc
-                                                ? ' '
-                                                : ' '
+                                                ? ' 🔽'
+                                                : ' 🔼'
                                             : ''}
                                     </span>
                                 </th>
@@ -174,7 +238,7 @@ function SortingTableComponent({ data }) {
                         accessor: 'percent_errors_against',
                     },
                     {
-                        Header: 'Points Lost To Referees',
+                        Header: 'Net Points Lost To Referees',
                         accessor: 'pointsLostByReferee',
                     },
                 ],
