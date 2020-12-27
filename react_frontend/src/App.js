@@ -9,7 +9,7 @@ class RefereeingUI extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			jsonOutputObject: [{
+			playerwiseJsonOutputObject: [{
 				"Committing_CC": "",
 				"Committing_CNC": "",
 				"Committing_IC": "",
@@ -21,8 +21,23 @@ class RefereeingUI extends React.Component {
 				"PlayerName": "",
 				"num_errors_against": "",
 				"num_errors_in_favor": "",
-				"percent_errors_against": 1.82,
-				"percent_errors_in_favor": 5.45
+				"percent_errors_against": "",
+				"percent_errors_in_favor": ""
+			}],
+			teamwiseJsonOutputObject: [{
+				"Committing_CC": "",
+				"Committing_CNC": "",
+				"Committing_IC": "",
+				"Committing_INC": "",
+				"Disadvantaged_CC": "",
+				"Disadvantaged_CNC": "",
+				"Disadvantaged_IC": "",
+				"Disadvantaged_INC": "",
+				"PlayerName": "",
+				"num_errors_against": "",
+				"num_errors_in_favor": "",
+				"percent_errors_against": "",
+				"percent_errors_in_favor": ""
 			}],
 			counter: 0,
 			teamOrPlayer: "Player",
@@ -33,6 +48,7 @@ class RefereeingUI extends React.Component {
 		this.callApi = this.callApi.bind(this);
 		this.handleChangeTeamOrPlayerName = this.handleChangeTeamOrPlayerName.bind(this);
 		this.handleChangeTeamOrPlayer = this.handleChangeTeamOrPlayer.bind(this);
+		this.getSpecificPlayerDetails = this.getSpecificPlayerDetails.bind(this);
 /////
 		const apiUrl = 'https://original-spider-273806.ue.r.appspot.com/get_player_referee_accuracies_data';
 		fetch(apiUrl)
@@ -40,9 +56,71 @@ class RefereeingUI extends React.Component {
 		response.json()
 		)
 		.then((data) => {
-			this.setState({jsonOutputObject: data,
+			var playerwiseJsonOutputObject_temp = JSON.parse(JSON.stringify(data));
+			var teamwiseJsonOutputObject_temp = JSON.parse(JSON.stringify(data));
+			
+			/*
+			playerwiseJsonOutputObject_temp.forEach(function (element, index, array) {
+				element.pointsLostByReferee = (element.num_errors_against - element.num_errors_in_favor) * 2;
+				if (element.PlayerName.split(' ').length ===  1 || element.PlayerName.match(/^ *$/) !== null){
+					array.splice(index, 1);
+				}
+			});
+			
+			
+			teamwiseJsonOutputObject_temp.forEach(function (element, index, array) {
+				element.pointsLostByReferee = (element.num_errors_against - element.num_errors_in_favor) * 2;
+				if (element.PlayerName.split(' ').length !==  1 || element.PlayerName.match(/^ *$/) !== null){
+					array.splice(index, 1);
+				}
+			});
+			
+			this.setState({playerwiseJsonOutputObject: playerwiseJsonOutputObject_temp,
+			teamwiseJsonOutputObject: teamwiseJsonOutputObject_temp,
 			counter: this.state.counter+1,
 			});
+			console.log("teamwise")
+			console.log(teamwiseJsonOutputObject_temp)
+			console.log(this.state.teamwiseJsonOutputObject)
+			*/
+			
+			teamwiseJsonOutputObject_temp.slice().reverse().forEach(function(element2, index, object) {
+				element2.pointsLostByReferee = (element2.num_errors_against - element2.num_errors_in_favor) * 2;
+				if (element2.PlayerName.split(' ').length !==  1 || element2.PlayerName.match(/^ *$/) !== null){
+					//console.log(element.PlayerName);
+					teamwiseJsonOutputObject_temp.splice(object.length - 1 - index, 1);
+				}
+				else{
+					//console.log(element.PlayerName);
+				}
+			});
+			
+			playerwiseJsonOutputObject_temp.slice().reverse().forEach(function(element2, index, object) {
+				element2.pointsLostByReferee = (element2.num_errors_against - element2.num_errors_in_favor) * 2;
+				if (element2.PlayerName.split(' ').length ===  1 || element2.PlayerName.match(/^ *$/) !== null){
+					//console.log(element.PlayerName);
+					playerwiseJsonOutputObject_temp.splice(object.length - 1 - index, 1);
+				}
+				else{
+					//console.log(element.PlayerName);
+				}
+			});
+			
+			this.setState({playerwiseJsonOutputObject: playerwiseJsonOutputObject_temp,
+			teamwiseJsonOutputObject: teamwiseJsonOutputObject_temp,
+			counter: this.state.counter+1,
+			});
+			
+			console.log("teamwise");
+			console.log(teamwiseJsonOutputObject_temp);
+			var index = 1;
+			console.log(this.state.teamwiseJsonOutputObject);
+			// var element = teamwiseJsonOutputObject_temp[index];
+			// console.log(element.PlayerName.split(' ').length);
+		    // console.log((element.PlayerName.split(' ').length !==  1 || element.PlayerName.match(/^ *$/) !== null));
+			
+			
+			
 		});
 
 //////	
@@ -52,6 +130,7 @@ class RefereeingUI extends React.Component {
 	}
 	handleChangeTeamOrPlayer(event){
 		this.setState({teamOrPlayer: event.target.value});
+		console.log("entered handleChangeTeamOrPlayer function")
 	}
 	
 
@@ -71,19 +150,23 @@ class RefereeingUI extends React.Component {
 			console.log(Object.getOwnPropertyNames(data));
 			// console.log(data[0].gameId);
 			// console.log(typeof data[0].gameId);
-			this.setState({jsonOutputObject: data,
+			this.setState({playerwiseJsonOutputObject: data,
 			counter: this.state.counter+1,
 			});
-		}
-	);
-}
+		});
+	}
+	
+	getSpecificPlayerDetails(){
+		console.log(this.state.teamOrPlayerName)
+	}
+	
   render() {
 	return (
 		<div className="Parent">
 			<div className="table">
 				<h3>How much NBA players are impacted by Referees</h3>
 				< img src={scottFosterCp3} width="600" height="338" />
-				<SortingTableComponent data={this.state.jsonOutputObject}/>
+				<SortingTableComponent submitButtonEvent={this.getSpecificPlayerDetails} onChangeTextboxFunc={this.handleChangeTeamOrPlayerName} onChangeFunc={this.handleChangeTeamOrPlayer} stateOfDropdown={this.state.teamOrPlayer} data={(this.state.teamOrPlayer == 'Player') ? this.state.playerwiseJsonOutputObject : this.state.teamwiseJsonOutputObject}/>
 			</div>
 			<div className="RefereeingInput">
 				{/*
@@ -91,11 +174,13 @@ class RefereeingUI extends React.Component {
 				<h1> {this.state.teamOrPlayer} </h1>
 				<h1> {this.state.teamOrPlayerName} </h1>
 				*/}
+				{/*
 				<select className="teamOrPlayer" value={this.state.teamOrPlayer} onChange={this.handleChangeTeamOrPlayer}>
 					<option value="Player">Player</option>
 					<option value="Team">Team</option>
 				</select>
-				<input className="teamOrPlayerName" type="text" value={this.state.teamOrPlayerName} onChange={this.handleChangeTeamOrPlayerName} />
+				*/}
+				<input className="teamOrPlayerName" size="20" type="text" value={this.state.teamOrPlayerName} onChange={this.handleChangeTeamOrPlayerName} />
 				<button className="callApi" onClick= {this.callApi}> 
 					 Submit
 				</button>

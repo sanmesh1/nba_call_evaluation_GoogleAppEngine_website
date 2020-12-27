@@ -9,6 +9,7 @@ function GlobalFilter({
     preGlobalFilteredRows,
     globalFilter,
     setGlobalFilter,
+	onChangeTextboxFunc
 }) {
     const count = preGlobalFilteredRows.length
     const [value, setValue] = React.useState(globalFilter)
@@ -18,15 +19,17 @@ function GlobalFilter({
 
     return (
         <span>
-            Search Player:{' '}
             <input
-                className="form-control"
                 value={value || ""}
                 onChange={e => {
                     setValue(e.target.value);
                     onChange(e.target.value);
+					console.log("GlobalFilter")
+					console.log(typeof onChangeTextboxFunc);
+					onChangeTextboxFunc(e);
                 }}
                 placeholder={'Enter Player Name...'}
+				style={{ width: '500px', height: '30px' }}
             />
         </span>
     )
@@ -49,7 +52,7 @@ function DefaultColumnFilter({
     )
 }
 
-function Table({ columns, data }) {
+function Table({ columns, data, onChangeFunc, stateOfDropdown, onChangeTextboxFunc, submitButtonEvent }) {
     // Use the state and functions returned from useTable to build your UI
     const defaultColumn = React.useMemo(
         () => ({
@@ -112,11 +115,19 @@ function Table({ columns, data }) {
                 </code>
             </pre>
 		*/}
-		    <GlobalFilter
+		    <select className="teamOrPlayer" value={stateOfDropdown} onChange={onChangeFunc}>
+				<option value="Player">Player</option>
+				<option value="Team">Team</option>
+			</select>
+			<GlobalFilter
                 preGlobalFilteredRows={preGlobalFilteredRows}
                 globalFilter={globalFilter}
                 setGlobalFilter={setGlobalFilter}
+				onChangeTextboxFunc = {onChangeTextboxFunc}
             />
+			<button className="callApi" onClick={submitButtonEvent}> 
+				Submit
+			</button>
             <table className="table" {...getTableProps()}>
                 <thead>
                     {headerGroups.map(headerGroup => (
@@ -213,13 +224,13 @@ function Table({ columns, data }) {
     )
 }
 
-function SortingTableComponent({ data }) {
-    data.forEach(function (element, index, array) {
-		element.pointsLostByReferee = (element.num_errors_against - element.num_errors_in_favor) * 2;
-		if (element.PlayerName.split(' ').length ==  1 || element.PlayerName.match(/^ *$/) !== null){
-			array.splice(index, 1);
-		}
-	});
+function SortingTableComponent({ data, onChangeFunc, stateOfDropdown, onChangeTextboxFunc, submitButtonEvent }) {
+    // data.forEach(function (element, index, array) {
+		// element.pointsLostByReferee = (element.num_errors_against - element.num_errors_in_favor) * 2;
+		// if (element.PlayerName.split(' ').length ==  1 || element.PlayerName.match(/^ *$/) !== null){
+			// array.splice(index, 1);
+		// }
+	// });
 	const columns = React.useMemo(
         () => [
             {
@@ -247,11 +258,13 @@ function SortingTableComponent({ data }) {
         []
     )
 
-    console.log(JSON.stringify(data));
-
+    // console.log(JSON.stringify(data));
+	console.log("SortingTableComponent")
+	console.log(typeof onChangeFunc)
+	console.log(typeof onChangeTextboxFunc)
 
     return (
-        <Table columns={columns} data={data} />
+<Table columns={columns} data={data} onChangeTextboxFunc={onChangeTextboxFunc} onChangeFunc={onChangeFunc} stateOfDropdown={stateOfDropdown} submitButtonEvent={submitButtonEvent}/>
     )
 }
 

@@ -48,11 +48,22 @@ def scratch_work_database():
     pdb.set_trace()
     print(got_game_referee_info)
 
+def turnDataFrameIntoDictionaryOfDictionaries(df):
+    df_old_player_table = pd.read_csv('player_table_v2.csv')
+    dict_of_player_dict = {}
+    for index, row in df_old_player_table.iterrows():
+        # pdb.set_trace()
+        dictionified = row.to_dict()
+        dictionified.pop("Unnamed: 0")
+        dict_of_player_dict[row['PlayerName']] = dictionified
+    return dict_of_player_dict
+    
 def populate_player_tables_based_on_csv():
 
     #load main csv file
-    df_input = pd.read_csv('2019-20.csv')
-
+    df_input = pd.read_csv('2018-19.csv')
+    df_old_player_table = pd.read_csv('player_table_v2.csv')
+    
     #create new dataframe
     dataColumns = ['PlayerName', 'Committing_CC', 'Committing_IC', 'Committing_CNC', 
 'Committing_INC', 'Disadvantaged_CC', 'Disadvantaged_IC', 
@@ -67,7 +78,7 @@ def populate_player_tables_based_on_csv():
     unique_player_names_disadvantaged = df_input["committing_player"].unique()
     unique_player_names = np.unique(np.concatenate((unique_player_names_commiting, unique_player_names_disadvantaged), axis=0))
     
-    dict_of_player_dict = {}
+    dict_of_player_dict = turnDataFrameIntoDictionaryOfDictionaries(df_old_player_table)
     #for each player, populate fields
     
     Committing_CC = Committing_IC = Committing_CNC = Committing_INC = 0
@@ -126,7 +137,7 @@ def populate_player_tables_based_on_csv():
         i += 1
     #Disadvantaged_CC = Disadvantaged_IC = Disadvantaged_CNC = Disadvantaged_INC
     
-	
+    
     for PlayerName in dict_of_player_dict.keys():
         totalCalls = (dict_of_player_dict[PlayerName]["Committing_CC"] + dict_of_player_dict[PlayerName]["Committing_IC"]
         + dict_of_player_dict[PlayerName]["Committing_CNC"] + dict_of_player_dict[PlayerName]["Committing_INC"]
@@ -136,7 +147,7 @@ def populate_player_tables_based_on_csv():
         dict_of_player_dict[PlayerName]["num_errors_in_favor"] = dict_of_player_dict[PlayerName]["Committing_INC"] + dict_of_player_dict[PlayerName]["Disadvantaged_IC"]
         dict_of_player_dict[PlayerName]["num_errors_against"] = dict_of_player_dict[PlayerName]["Committing_IC"] + dict_of_player_dict[PlayerName]["Disadvantaged_INC"]
         # pdb.set_trace()
-		
+        
         if totalCalls != 0:
             dict_of_player_dict[PlayerName]["percent_errors_in_favor"] = round(float(dict_of_player_dict[PlayerName]["num_errors_in_favor"])/totalCalls*100, 2)
             dict_of_player_dict[PlayerName]["percent_errors_against"] = round(float(dict_of_player_dict[PlayerName]["num_errors_against"])/totalCalls*100, 2)
@@ -146,7 +157,7 @@ def populate_player_tables_based_on_csv():
         
         df_output = df_output.append(dict_of_player_dict[PlayerName], ignore_index = True)
     
-    df_output.to_csv("player_table.csv")
+    df_output.to_csv("player_table_v3.csv")
     
     
 

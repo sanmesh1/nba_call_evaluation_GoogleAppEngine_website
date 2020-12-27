@@ -9,7 +9,7 @@ def postDataToDatabase(url, myobj):
 	return x
 
 
-df = pd.read_csv('player_table.csv')
+df = pd.read_csv('player_table_v3.csv')
 # pdb.set_trace()
 
 url = 'https://original-spider-273806.ue.r.appspot.com/post_player_referee_accuracies_data'

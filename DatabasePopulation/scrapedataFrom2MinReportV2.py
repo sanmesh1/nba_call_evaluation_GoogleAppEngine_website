@@ -1,6 +1,6 @@
 #USER INPUT
 forceRewriteData = 1
-season = "2019-20"
+season = "2017-18"
 urlOf2MinReportMainPage = "https://official.nba.com/" + season + "-nba-officiating-last-two-minute-reports/"
 
 
@@ -256,6 +256,7 @@ def collectDataFrom2MinReports(gameIdKeyUrlValueDict, season):
 
 if __name__ == "__main__":
 	htmlOf2MinReport = getHtmlFrom2MinReport(urlOf2MinReportMainPage)
+	pdb.set_trace()
 	gameIdKeyUrlValueDict = getDictOfGameIdsAndUrlsFrom2minReport(htmlOf2MinReport)
 	
 	# #debug
