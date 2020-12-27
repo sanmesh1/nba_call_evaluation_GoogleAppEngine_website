@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import scottFosterCp3 from './images/scottFosterCp3.jpg';
 import './App.css';
 import SortingTableComponent from './components/basic.table';
-
+import { Chart } from "react-google-charts";
 
 class RefereeingUI extends React.Component {
 	constructor(props){
@@ -44,6 +44,7 @@ class RefereeingUI extends React.Component {
 			teamOrPlayerName: "",
 			cheating: {disadvantaged: null, commiting: null, totalPercentage: null},
 			protecting: {disadvantaged: null, commiting: null, totalPercentage: null},
+			percentErrorsAgainstVsNumErrorsAgainst: []
 		};
 		this.callApi = this.callApi.bind(this);
 		this.handleChangeTeamOrPlayerName = this.handleChangeTeamOrPlayerName.bind(this);
@@ -106,7 +107,15 @@ class RefereeingUI extends React.Component {
 				}
 			});
 			
-			this.setState({playerwiseJsonOutputObject: playerwiseJsonOutputObject_temp,
+			/*
+			var percentErrorsAgainstVsNumErrorsAgainst_temp = []
+			this.state.playerwiseJsonOutputObject.forEach(function(currentValue, index, array ) {
+				percentErrorsAgainstVsNumErrorsAgainst_temp.push([currentValue.percent_errors_against, currentValue.num_errors_against, currentValue.PlayerName]);
+			});
+			*/
+			
+			this.setState({
+			playerwiseJsonOutputObject: playerwiseJsonOutputObject_temp,
 			teamwiseJsonOutputObject: teamwiseJsonOutputObject_temp,
 			counter: this.state.counter+1,
 			});
@@ -133,7 +142,16 @@ class RefereeingUI extends React.Component {
 		console.log("entered handleChangeTeamOrPlayer function")
 	}
 	
-
+	data_table= [
+		['Age', 'Weight'],
+		[8, 12],
+		[4, 5.5],
+		[11, 14],
+		[4, 5],
+		[3, 3.5],
+		[6.5, 7],
+	]
+  
 	// function getDataFromApi(url) {
 		// return p1 * p2;   // The function returns the product of p1 and p2
 	// }
@@ -156,8 +174,21 @@ class RefereeingUI extends React.Component {
 		});
 	}
 	
-	getSpecificPlayerDetails(){
-		console.log(this.state.teamOrPlayerName)
+	getSpecificPlayerDetails(player_referee_accuracies_object){
+		console.log(player_referee_accuracies_object.PlayerName);
+		
+		var percentErrorsAgainstVsNumErrorsAgainst_temp = [["X", "Y", {role: "style", type: "string"}, { role: "tooltip", type: "string", p: { html: true } }]]
+		this.state.playerwiseJsonOutputObject.forEach(function(currentValue, index, array ) {
+			var str = "";
+			if (currentValue.PlayerName == player_referee_accuracies_object.PlayerName){
+				percentErrorsAgainstVsNumErrorsAgainst_temp.push([currentValue.num_errors_against, currentValue.percent_errors_against, 'point { size: 18; shape-type: star; fill-color: #a52714; }', str.concat("player = ", currentValue.PlayerName, ", num = ", currentValue.num_errors_against.toString(), ", % = ", currentValue.percent_errors_against.toString())]);
+			}
+			else{
+				percentErrorsAgainstVsNumErrorsAgainst_temp.push([currentValue.num_errors_against, currentValue.percent_errors_against, 'blue', str.concat("player = ", currentValue.PlayerName, ", num = ", currentValue.num_errors_against.toString(), ", % = ", currentValue.percent_errors_against.toString())]);
+			}
+		});
+		
+		this.setState({percentErrorsAgainstVsNumErrorsAgainst: percentErrorsAgainstVsNumErrorsAgainst_temp});
 	}
 	
   render() {
@@ -166,7 +197,7 @@ class RefereeingUI extends React.Component {
 			<div className="table">
 				<h3>How much NBA players are impacted by Referees</h3>
 				< img src={scottFosterCp3} width="600" height="338" />
-				<SortingTableComponent submitButtonEvent={this.getSpecificPlayerDetails} onChangeTextboxFunc={this.handleChangeTeamOrPlayerName} onChangeFunc={this.handleChangeTeamOrPlayer} stateOfDropdown={this.state.teamOrPlayer} data={(this.state.teamOrPlayer == 'Player') ? this.state.playerwiseJsonOutputObject : this.state.teamwiseJsonOutputObject}/>
+				<SortingTableComponent clickOnRowFunc={this.getSpecificPlayerDetails} submitButtonEvent={this.getSpecificPlayerDetails} onChangeTextboxFunc={this.handleChangeTeamOrPlayerName} onChangeFunc={this.handleChangeTeamOrPlayer} stateOfDropdown={this.state.teamOrPlayer} data={(this.state.teamOrPlayer == 'Player') ? this.state.playerwiseJsonOutputObject : this.state.teamwiseJsonOutputObject}/>
 			</div>
 			<div className="RefereeingInput">
 				{/*
@@ -186,6 +217,7 @@ class RefereeingUI extends React.Component {
 				</button>
 			</div>
 			<div className="RefereeingAccuracyOutput">
+				<Greeting isLoggedIn={this.state.percentErrorsAgainstVsNumErrorsAgainst} />
 					How favorable are refs?
 					
 					<br /><br />REFEREE CHEATING:
@@ -222,6 +254,35 @@ class RefereeingUI extends React.Component {
 					<br /><br /> Show everything in bar chart and box chart
 			</div>
 		</div>
+	);
+  }
+}
+
+function Greeting(props) {
+  const isLoggedIn = props.isLoggedIn;
+  console.log("Function Greeting")
+  console.log(isLoggedIn)
+  if (isLoggedIn !== undefined && isLoggedIn.length !== 0) {
+    return (
+		<Chart
+		  width={'600px'}
+		  height={'400px'}
+		  chartType="ScatterChart"
+		  loader={<div>Loading Chart</div>}
+	      data={isLoggedIn}  
+		  options={{
+			title: 'Age vs. Weight comparison',
+			hAxis: { title: 'num errors against', minValue: 0, maxValue: 12 },
+			vAxis: { title: '% errors against', minValue: 0, maxValue: 60 },
+			legend: 'none',
+		  }}
+		  rootProps={{ 'data-testid': '1' }}
+		/>
+	);
+  }
+  else{
+	return (
+		"Nothing"
 	);
   }
 }

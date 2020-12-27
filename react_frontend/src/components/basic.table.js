@@ -52,7 +52,7 @@ function DefaultColumnFilter({
     )
 }
 
-function Table({ columns, data, onChangeFunc, stateOfDropdown, onChangeTextboxFunc, submitButtonEvent }) {
+function Table({ clickOnRowFunc, columns, data, onChangeFunc, stateOfDropdown, onChangeTextboxFunc, submitButtonEvent }) {
     // Use the state and functions returned from useTable to build your UI
     const defaultColumn = React.useMemo(
         () => ({
@@ -62,6 +62,8 @@ function Table({ columns, data, onChangeFunc, stateOfDropdown, onChangeTextboxFu
         []
     )
 
+	
+	
     const {
         getTableProps,
         getTableBodyProps,
@@ -156,7 +158,7 @@ function Table({ columns, data, onChangeFunc, stateOfDropdown, onChangeTextboxFu
                         (row, i) => {
                             prepareRow(row);
                             return (
-                                <tr {...row.getRowProps()}>
+                                <tr {...row.getRowProps()} onClick={() => clickOnRowFunc(row.original)}>
                                     {row.cells.map(cell => {
                                         return (
                                             <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
@@ -224,7 +226,7 @@ function Table({ columns, data, onChangeFunc, stateOfDropdown, onChangeTextboxFu
     )
 }
 
-function SortingTableComponent({ data, onChangeFunc, stateOfDropdown, onChangeTextboxFunc, submitButtonEvent }) {
+function SortingTableComponent({ data, onChangeFunc, stateOfDropdown, onChangeTextboxFunc, submitButtonEvent, clickOnRowFunc }) {
     // data.forEach(function (element, index, array) {
 		// element.pointsLostByReferee = (element.num_errors_against - element.num_errors_in_favor) * 2;
 		// if (element.PlayerName.split(' ').length ==  1 || element.PlayerName.match(/^ *$/) !== null){
@@ -264,7 +266,7 @@ function SortingTableComponent({ data, onChangeFunc, stateOfDropdown, onChangeTe
 	console.log(typeof onChangeTextboxFunc)
 
     return (
-<Table columns={columns} data={data} onChangeTextboxFunc={onChangeTextboxFunc} onChangeFunc={onChangeFunc} stateOfDropdown={stateOfDropdown} submitButtonEvent={submitButtonEvent}/>
+<Table clickOnRowFunc={clickOnRowFunc} columns={columns} data={data} onChangeTextboxFunc={onChangeTextboxFunc} onChangeFunc={onChangeFunc} stateOfDropdown={stateOfDropdown} submitButtonEvent={submitButtonEvent}/>
     )
 }
 
