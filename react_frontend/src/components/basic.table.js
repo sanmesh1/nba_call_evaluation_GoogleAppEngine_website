@@ -26,7 +26,7 @@ function GlobalFilter({
                     onChange(e.target.value);
 					console.log("GlobalFilter")
 					console.log(typeof onChangeTextboxFunc);
-					onChangeTextboxFunc(e);
+					//onChangeTextboxFunc(e);
                 }}
                 placeholder={'Enter Player Name...'}
 				style={{ width: '500px', height: '30px' }}
@@ -127,9 +127,11 @@ function Table({ clickOnRowFunc, columns, data, onChangeFunc, stateOfDropdown, o
                 setGlobalFilter={setGlobalFilter}
 				onChangeTextboxFunc = {onChangeTextboxFunc}
             />
+			{/*
 			<button className="callApi" onClick={submitButtonEvent}> 
 				Submit
 			</button>
+			*/}
             <table className="table" {...getTableProps()}>
                 <thead>
                     {headerGroups.map(headerGroup => (
@@ -171,7 +173,6 @@ function Table({ clickOnRowFunc, columns, data, onChangeFunc, stateOfDropdown, o
                 </tbody>
             </table>
             <br />
-            <div>Showing the first 20 results of {rows.length} rows</div>
             <ul className="pagination">
                 <li className="page-item" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                     <a className="page-link">First</a>

@@ -178,7 +178,13 @@ class RefereeingUI extends React.Component {
 		console.log(player_referee_accuracies_object.PlayerName);
 		
 		var percentErrorsAgainstVsNumErrorsAgainst_temp = [["X", "Y", {role: "style", type: "string"}, { role: "tooltip", type: "string", p: { html: true } }]]
-		this.state.playerwiseJsonOutputObject.forEach(function(currentValue, index, array ) {
+		if (this.state.teamOrPlayer == "Player"){
+			var arrayTemp = this.state.playerwiseJsonOutputObject
+		}
+		else{
+			var arrayTemp = this.state.teamwiseJsonOutputObject
+		}
+		arrayTemp.forEach(function(currentValue, index, array ) {
 			var str = "";
 			if (currentValue.PlayerName == player_referee_accuracies_object.PlayerName){
 				percentErrorsAgainstVsNumErrorsAgainst_temp.push([currentValue.num_errors_against, currentValue.percent_errors_against, 'point { size: 18; shape-type: star; fill-color: #a52714; }', str.concat("player = ", currentValue.PlayerName, ", num = ", currentValue.num_errors_against.toString(), ", % = ", currentValue.percent_errors_against.toString())]);
@@ -188,7 +194,10 @@ class RefereeingUI extends React.Component {
 			}
 		});
 		
-		this.setState({percentErrorsAgainstVsNumErrorsAgainst: percentErrorsAgainstVsNumErrorsAgainst_temp});
+		this.setState({
+			percentErrorsAgainstVsNumErrorsAgainst: percentErrorsAgainstVsNumErrorsAgainst_temp,
+			teamOrPlayerName: player_referee_accuracies_object.PlayerName
+		});
 	}
 	
   render() {
@@ -197,6 +206,12 @@ class RefereeingUI extends React.Component {
 			<div className="table">
 				<h3>How much NBA players are impacted by Referees</h3>
 				< img src={scottFosterCp3} width="600" height="338" />
+				<div>
+					<strong>Make a selection of Player or Team in the dropdown below to see the table full of players or teams, and the referee adverse impact on them. 
+						You can sort the table by the fields by clicking on the fields. You can also filter out specific teams and players by typing in the dropdown
+						below. You can also click on a row to see player or team specific info below the table.
+					</strong>
+				</div>
 				<SortingTableComponent clickOnRowFunc={this.getSpecificPlayerDetails} submitButtonEvent={this.getSpecificPlayerDetails} onChangeTextboxFunc={this.handleChangeTeamOrPlayerName} onChangeFunc={this.handleChangeTeamOrPlayer} stateOfDropdown={this.state.teamOrPlayer} data={(this.state.teamOrPlayer == 'Player') ? this.state.playerwiseJsonOutputObject : this.state.teamwiseJsonOutputObject}/>
 			</div>
 			<div className="RefereeingInput">
@@ -210,48 +225,14 @@ class RefereeingUI extends React.Component {
 					<option value="Player">Player</option>
 					<option value="Team">Team</option>
 				</select>
-				*/}
 				<input className="teamOrPlayerName" size="20" type="text" value={this.state.teamOrPlayerName} onChange={this.handleChangeTeamOrPlayerName} />
 				<button className="callApi" onClick= {this.callApi}> 
 					 Submit
 				</button>
+				*/}
 			</div>
 			<div className="RefereeingAccuracyOutput">
-				<Greeting isLoggedIn={this.state.percentErrorsAgainstVsNumErrorsAgainst} />
-					How favorable are refs?
-					
-					<br /><br />REFEREE CHEATING:
-					
-					<br /><br />Referees being blind to fouls commited by player % = 
-					commiting_INC/(commiting_CC+ commiting_INC)
-					<br />{this.state.cheating.commiting}
-					<br /><br />Referees taking out opponent by calling incorrect fouls against player opponent % = 
-					disadv_IC/(disadv_CNC+ disadv_IC)
-					<br />{this.state.cheating.disadvantaged}
-
-					<br /><br />Total Cheating %: 
-					(commiting_INC+disadv_IC)/(commiting_CC+ commiting_INC + disadv_CNC+ disadv_IC)
-					<br />{this.state.cheating.totalPercentage}
-
-					<br /><br />Comparison to avg cheating %:
-
-					<br /><br />Show everything in bar chart and box chart
-
-					<br /><br />PROTECTING PLAYER CORRECTLY:
-
-					<br /><br />Referees not calling fouls on player unnecessarily % = commiting_CNC/(commiting_IC+ commiting_CNC)
-					<br />{this.state.protecting.commiting}
-
-					<br /><br />Referees correctly protecting player against opponent fouls % =
-					disadv_CC/(disadv_INC+ disadv_CC)
-					<br />{this.state.protecting.disadvantaged}
-
-					<br /><br />Total Correct Protection %:
-					<br />{this.state.protecting.totalPercentage}					
-
-					<br /><br />Comparison to avg protection %:
-
-					<br /><br /> Show everything in bar chart and box chart
+				<Greeting isLoggedIn={this.state.percentErrorsAgainstVsNumErrorsAgainst} playerTeamName = {this.state.teamOrPlayerName}/>
 			</div>
 		</div>
 	);
@@ -264,20 +245,23 @@ function Greeting(props) {
   console.log(isLoggedIn)
   if (isLoggedIn !== undefined && isLoggedIn.length !== 0) {
     return (
-		<Chart
-		  width={'600px'}
-		  height={'400px'}
-		  chartType="ScatterChart"
-		  loader={<div>Loading Chart</div>}
-	      data={isLoggedIn}  
-		  options={{
-			title: 'Age vs. Weight comparison',
-			hAxis: { title: 'num errors against', minValue: 0, maxValue: 12 },
-			vAxis: { title: '% errors against', minValue: 0, maxValue: 60 },
-			legend: 'none',
-		  }}
-		  rootProps={{ 'data-testid': '1' }}
-		/>
+		<div>
+			<h1> {props.playerTeamName} </h1>
+			<Chart
+			  width={'600px'}
+			  height={'400px'}
+			  chartType="ScatterChart"
+			  loader={<div>Loading Chart</div>}
+			  data={isLoggedIn}  
+			  options={{
+				title: '% errors against vs. num errors against',
+				hAxis: { title: 'num errors against', minValue: 0, maxValue: 12 },
+				vAxis: { title: '% errors against', minValue: 0, maxValue: 60 },
+				legend: 'none',
+			  }}
+			  rootProps={{ 'data-testid': '1' }}
+			/>
+		</div>
 	);
   }
   else{
