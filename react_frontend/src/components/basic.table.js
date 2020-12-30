@@ -28,7 +28,7 @@ function GlobalFilter({
 					console.log(typeof onChangeTextboxFunc);
 					//onChangeTextboxFunc(e);
                 }}
-                placeholder={'Enter Player Name...'}
+                placeholder={'Enter Player/Team Name...'}
 				style={{ width: '500px', height: '30px' }}
             />
         </span>
@@ -117,7 +117,7 @@ function Table({ clickOnRowFunc, columns, data, onChangeFunc, stateOfDropdown, o
                 </code>
             </pre>
 		*/}
-		    <select className="teamOrPlayer" value={stateOfDropdown} onChange={onChangeFunc}>
+		    <select className="teamOrPlayer" value={stateOfDropdown} onChange={onChangeFunc} style={{ width: '80px', height: '40px' }}>
 				<option value="Player">Player</option>
 				<option value="Team">Team</option>
 			</select>

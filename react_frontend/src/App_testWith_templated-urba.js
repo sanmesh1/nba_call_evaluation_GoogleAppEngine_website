@@ -1,19 +1,10 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
 import scottFosterCp3 from './images/scottFosterCp3.jpg';
-import scottFosterAwakenedMedium from './images/scottFosterAwakenedMedium.jpg';
 //import './App.css';
 import './assets/css/main.css';
-import './assets/css/font-awesome.min.css';
 import SortingTableComponent from './components/basic.table';
 import { Chart } from "react-google-charts";
-import ScriptTag from 'react-script-tag';
-// import './assets/js/jquery.min.js';
-// import './assets/js/jquery.scrolly.min.js';
-// import './assets/js/jquery.scrollex.min.js';
-// import './assets/js/skel.min.js';
-// import './assets/js/util.js';
-// import './assets/js/main.js';
 
 class RefereeingUI extends React.Component {
 	constructor(props){
@@ -54,22 +45,7 @@ class RefereeingUI extends React.Component {
 			teamOrPlayerName: "",
 			cheating: {disadvantaged: null, commiting: null, totalPercentage: null},
 			protecting: {disadvantaged: null, commiting: null, totalPercentage: null},
-			percentErrorsAgainstVsNumErrorsAgainst: [],
-			incorrectCallsTableForIndividualJsonOutputObject: [{
-				"Committing_CC": "",
-				"Committing_CNC": "",
-				"Committing_IC": "",
-				"Committing_INC": "",
-				"Disadvantaged_CC": "",
-				"Disadvantaged_CNC": "",
-				"Disadvantaged_IC": "",
-				"Disadvantaged_INC": "",
-				"PlayerName": "",
-				"num_errors_against": "",
-				"num_errors_in_favor": "",
-				"percent_errors_against": "",
-				"percent_errors_in_favor": ""
-			}],
+			percentErrorsAgainstVsNumErrorsAgainst: []
 		};
 		this.callApi = this.callApi.bind(this);
 		this.handleChangeTeamOrPlayerName = this.handleChangeTeamOrPlayerName.bind(this);
@@ -159,36 +135,6 @@ class RefereeingUI extends React.Component {
 
 //////	
 	}
-	
-	componentDidMount () {
-		var script = document.createElement("script");
-		script.src = "./assets/js/jquery.min.js";
-		script.async = true;
-		document.body.appendChild(script);
-		
-		script.src = "./assets/js/jquery.scrolly.min.js";
-		document.body.appendChild(script);
-		
-		script.src = "./assets/js/jquery.scrollex.min.js";
-		document.body.appendChild(script);
-
-		script.src = "./assets/js/skel.min.js";
-		document.body.appendChild(script);
-		
-		script.src = "./assets/js/util.js";
-		document.body.appendChild(script);
-
-		script.src = "./assets/js/main.js";
-		document.body.appendChild(script);
-		
-		// import './assets/js/jquery.min.js';
-// import './assets/js/jquery.scrolly.min.js';
-// import './assets/js/jquery.scrollex.min.js';
-// import './assets/js/skel.min.js';
-// import './assets/js/util.js';
-// import './assets/js/main.js';
-	}
-
 	handleChangeTeamOrPlayerName(event){
 		this.setState({teamOrPlayerName: event.target.value});
 	}
@@ -253,19 +199,23 @@ class RefereeingUI extends React.Component {
 			percentErrorsAgainstVsNumErrorsAgainst: percentErrorsAgainstVsNumErrorsAgainst_temp,
 			teamOrPlayerName: player_referee_accuracies_object.PlayerName
 		});
-		
-		var elmnt = document.getElementById("RefereeingInput");
-		elmnt.scrollIntoView();
-		
 	}
 	
   render() {
 	return (
-		<div className="SpecificPlayerTable" id="SpecificPlayerTable">
+		<div className="Parent">
 			<div className="table">
+				<h3>How much NBA players are impacted by Referees</h3>
+				< img src={scottFosterCp3} width="600" height="338" />
+				<div>
+					<strong>Make a selection of Player or Team in the dropdown below to see the table full of players or teams, and the referee adverse impact on them. 
+						You can sort the table by the fields by clicking on the fields. You can also filter out specific teams and players by typing in the dropdown
+						below. You can also click on a row to see player or team specific info below the table.
+					</strong>
+				</div>
 				<SortingTableComponent clickOnRowFunc={this.getSpecificPlayerDetails} submitButtonEvent={this.getSpecificPlayerDetails} onChangeTextboxFunc={this.handleChangeTeamOrPlayerName} onChangeFunc={this.handleChangeTeamOrPlayer} stateOfDropdown={this.state.teamOrPlayer} data={(this.state.teamOrPlayer == 'Player') ? this.state.playerwiseJsonOutputObject : this.state.teamwiseJsonOutputObject}/>
 			</div>
-			<div className="RefereeingInput" id="RefereeingInput">
+			<div className="RefereeingInput">
 				{/*
 				<h1> {this.state.text} </h1>
 				<h1> {this.state.teamOrPlayer} </h1>
@@ -298,7 +248,6 @@ function Greeting(props) {
     return (
 		<div>
 			<h1> {props.playerTeamName} </h1>
-			<p1> <strong>The red star indicates selected player. Hover over graph points to see labels.</strong> </p1>
 			<Chart
 			  width={'600px'}
 			  height={'400px'}
@@ -324,71 +273,12 @@ function Greeting(props) {
 }
 
 class App extends Component {
-	state = {
-		  displayDownButton: false,
-		  displayUpButton: false,
-		  scrollPosition:0
-	}	
-	componentDidMount () {
-		const script = document.createElement("script");
-		script.src = "./assets/js/jquery.min.js";
-		script.async = true;
-		document.body.appendChild(script);
-		
-		const script1 = document.createElement("script");
-		script1.src = "./assets/js/jquery.scrolly.min.js";
-		script1.async = true;
-		document.body.appendChild(script1);
-		
-		const script2 = document.createElement("script");
-		script2.src = "./assets/js/jquery.scrollex.min.js";
-		script2.async = true;
-		document.body.appendChild(script2);
-		
-		const script3 = document.createElement("script");
-		script3.src = "./assets/js/skel.min.js";
-		script3.async = true;
-		document.body.appendChild(script3);
-		
-		const script4 = document.createElement("script");
-		script4.src = "./assets/js/util.js";
-		script4.async = true;
-		document.body.appendChild(script4);
-		
-		const script5 = document.createElement("script");
-		script5.src = "./assets/js/main.js";
-		script5.async = true;
-		document.body.appendChild(script5);
-		
-		// script.src = "./assets/js/jquery.scrolly.min.js";
-		// document.body.appendChild(script);
-		
-		// script.src = "./assets/js/jquery.scrollex.min.js";
-		// document.body.appendChild(script);
-
-		// script.src = "./assets/js/skel.min.js";
-		// document.body.appendChild(script);
-		
-		// script.src = "./assets/js/util.js";
-		// document.body.appendChild(script);
-
-		// script.src = "./assets/js/main.js";
-		// document.body.appendChild(script);
-		
-		// import './assets/js/jquery.min.js';
-// import './assets/js/jquery.scrolly.min.js';
-// import './assets/js/jquery.scrollex.min.js';
-// import './assets/js/skel.min.js';
-// import './assets/js/util.js';
-// import './assets/js/main.js';
-	}
-	
   render() {
     return (
 
 		<html>
 			<head>
-				<title>Sanmeshkumar Udhayakumar</title>
+				<title>Urban by TEMPLATED</title>
 				<meta charset="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="stylesheet" href="assets/css/main.css" />
@@ -397,7 +287,7 @@ class App extends Component {
 
 			{/*<!-- Header --> */}
 					<header id="header" class="alt">
-						<div class="logo"><a href="https://github.com/sanmesh1/nba_call_evaluation_ReactFrontEnd_PythonFlaskGoogleAppEngineBackend_website">Sanmeshkumar Udhayakumar</a></div>
+						<div class="logo"><a href="index.html">Urban <span>by TEMPLATED</span></a></div>
 						<a href="#menu">Menu</a>
 					</header>
 
@@ -414,9 +304,10 @@ class App extends Component {
 					<section id="banner">
 						<div class="inner">
 							<header>
-								<h1>NBA Referee Impact On NBA Players/Teams</h1>
+								<h1>This is Urban</h1>
+								<p>Aliquam libero augue varius non odio nec faucibus congue<br />felis quisque a diam rutrum tempus massa accumsan faucibus purus.</p>
 							</header>
-							<a href="#main" onClick={this.handleScrollToStats} class="button big scrolly">Scroll Down</a>
+							<a href="#main" class="button big scrolly">Learn More</a>
 						</div>
 					</section>
 
@@ -424,60 +315,47 @@ class App extends Component {
 					<div id="main">
 
 						{/*<!-- Section -->*/}
+							<section class="wrapper style1">
+								<div class="inner">
+									{/*<!-- 2 Columns -->*/}
+										<div class="flex flex-2">
+											<div class="col col1">
+												<div class="image round fit">
+													<a href="generic.html" class="link"><img src="images/pic01.jpg" alt="" /></a>
+												</div>
+											</div>
+											<div class="col col2">
+												<h3>Maecenas a gravida quam</h3>
+												<div className="App">
+													<RefereeingUI > </RefereeingUI >
+												</div>
+												<p>Etiam posuere hendrerit arcu, ac blandit nulla. Sed congue malesuada nibh, a varius odio vehicula aliquet. Aliquam consequat, nunc quis sollicitudin aliquet, enim magna cursus auctor lacinia nunc ex blandit augue. Ut vitae neque fermentum, luctus elit fermentum, porta augue. Nullam ultricies, turpis at fermentum iaculis, nunc justo dictum dui, non aliquet erat nibh non ex.</p>
+												<p>Sed congue malesuada nibh, a varius odio vehicula aliquet. Aliquam consequat, nunc quis sollicitudin aliquet, enim magna cursus auctor lacinia nunc ex blandit augue. Ut vitae neque fermentum, luctus elit fermentum, porta augue. Nullam ultricies, turpis at fermentum iaculis, nunc justo dictum dui, non aliquet erat nibh non ex. </p>
+												<a href="#" class="button">Learn More</a>
+											</div>
+										</div>
+								</div>
+							</section>
+
+						{/*<!-- Section -->*/}
 							<section class="wrapper style2">
 								<div class="inner">
 									<div class="flex flex-2">
 										<div class="col col2">
-											<h3>Referees Aren't Perfect</h3>
-											<p>If you're a sports fan, you understand that referees are far from perfect. We've all pulled our hair over a missed goal-tending,
-											 or the referee swallowing their whistle at the end of games. On the bottom right, you can see a video of Trailblazers Guard CJ 
-											 McCollum talk eloquently about a missed goal-tending call by the referees, which cost them the game, but which the referees had the 
-											 audacity to tell him, "Was an obvious Non-call". In general, <strong>WE'VE ASSUMED THAT ON THE BALANCE, REFEREES ARE
-											  EQUALLY UNBIASED TOWARDS ALL TEAMS</strong>.
-											</p>
-											
-											<h4>BUT ARE REFEREES ACTUALLY UNBIASED?</h4>
-											<p>The NBA releases a 2 minute report, which is a report that details all the plays in the last 2 minutes, and whether they are
-											Correct Calls (CC), Incorrect Calls (IC), Correct Non-Calls (CNC), and Incorrect Non-Calls (INC) in game, with great detail (<a href="https://official.nba.com/l2m/L2MReport.html?gameId=0041800406">Example</a>). 
-											I have mined the 2 minute reports for the 2018-2020 seasons to how much referees incorrectly negatively impact
-											players/teams, and whether there is a bias towards certain teams/players.</p>
-											<p>In the next section, you will see a table with:</p>
-												<li>Table of teams or players listed</li>
-												<li># Errors against a team/player</li>
-												<li>% Errors against a team/player with respect to all calls made on player/team</li>
-												<li>Net points the team/player lost to the referee</li>
-											<p>Use the dropdown to select viewing disadvantaged players, or teams in the table</p>
-											<a href="#TableInput" onClick={this.handleScrollToStats} class="button">Go To Referee Bias Exploration</a>
+											<h3>Suspendisse quis massa vel justo</h3>
+											<p>Etiam posuere hendrerit arcu, ac blandit nulla. Sed congue malesuada nibh, a varius odio vehicula aliquet. Aliquam consequat, nunc quis sollicitudin aliquet, enim magna cursus auctor lacinia nunc ex blandit augue. Ut vitae neque fermentum, luctus elit fermentum, porta augue. Nullam ultricies, turpis at fermentum iaculis, nunc justo dictum dui, non aliquet erat nibh non ex.</p>
+											<p>Sed congue malesuada nibh, a varius odio vehicula aliquet. Aliquam consequat, nunc quis sollicitudin aliquet, enim magna cursus auctor lacinia nunc ex blandit augue. Ut vitae neque fermentum, luctus elit fermentum, porta augue. Nullam ultricies, turpis at fermentum iaculis, nunc justo dictum dui, non aliquet erat nibh non ex. </p>
+											<a href="#" class="button">Learn More</a>
 										</div>
 										<div class="col col1 first">
 											<div class="image round fit">
-											{/*<a href="generic.html" class="link"><img src="images/pic02.jpg" alt="" /></a>*/}
-											< img src={scottFosterAwakenedMedium} width="600" height="338" />
+												<a href="generic.html" class="link"><img src="images/pic02.jpg" alt="" /></a>
 											</div>
-											<iframe width="560" height="315" src="https://www.youtube.com/embed/MtBXI6FFIcw?start=197" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 										</div>
 									</div>
 								</div>
 							</section>
-					
-						{/*<!-- Section -->*/}
-							<div id="TableInput">
-							<section class="wrapper style1">
-								<div class="inner">
-									{/*<!-- 2 Columns -->*/}
-											<h3>Referee Bias Exploration</h3>
-											<strong>
-												<li>Make a selection of Player or Team in the dropdown below to update table.</li>
-												<li>Click on a table row to see referee details on a particular team/player</li>
-												<li>Sort table by any of column fields by clicking on it</li>
-												<li>Filter for specific team/player be entering name in box below</li>
-											</strong>
-											<div className="App">
-												<RefereeingUI > </RefereeingUI >
-											</div>
-								</div>
-							</section>
-							</div>
+
 						{/*<!-- Section -->*/}
 							<section class="wrapper style1">
 								<div class="inner">
@@ -526,20 +404,14 @@ class App extends Component {
 						</div>
 					</footer>
 
-					<script type="text/babel" src="assets/js/jquery.min.js"></script>
-					<script type="text/babel" src="assets/js/jquery.scrolly.min.js"></script>
-					<script type="text/babel" src="assets/js/jquery.scrollex.min.js"></script>
-					<script type="text/babel" src="assets/js/skel.min.js"></script>
-					<script type="text/babel" src="assets/js/util.js"></script>
-					<script type="text/babel" src="assets/js/main.js"></script>
-				{/*
-					<ScriptTag isHydrating={true} type="text/javascript" src="assets/js/jquery.min.js" />
-					<ScriptTag isHydrating={true} type="text/javascript" src="assets/js/jquery.scrolly.min.js" />
-					<ScriptTag isHydrating={true} type="text/javascript" src="assets/js/jquery.scrollex.min.js" />
-					<ScriptTag isHydrating={true} type="text/javascript" src="assets/js/skel.min.js" />
-					<ScriptTag isHydrating={true} type="text/javascript" src="assets/js/util.js" />
-					<ScriptTag isHydrating={true} type="text/javascript" src="assets/js/main.js" />
-				*/}
+				{/*<!-- Scripts -->*/}
+					<script src="assets/js/jquery.min.js"></script>
+					<script src="assets/js/jquery.scrolly.min.js"></script>
+					<script src="assets/js/jquery.scrollex.min.js"></script>
+					<script src="assets/js/skel.min.js"></script>
+					<script src="assets/js/util.js"></script>
+					<script src="assets/js/main.js"></script>
+
 			</body>
 		</html>
     );
