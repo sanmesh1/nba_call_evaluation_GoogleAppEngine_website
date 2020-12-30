@@ -37,7 +37,13 @@ def post_data():
 def get_data_filtered(filter_type = None, filter_param = None):
     if filter_type == None or filter_param == None:
         return jsonify({"msg": "Missing one of params"}), 400
-    return get_game_referee_info_filtered(filter_type, filter_param)  
+    return get_game_referee_info_filtered(filter_type, filter_param)
+    
+@app.route('/get_plays_of_errors_against_individuals/<individualName>', methods=['GET'])
+def get_plays_of_errors_against_individuals(individualName = None):
+    if individualName == None:
+        return jsonify({"msg": "Missing one of params"}), 400
+    return get_plays_of_errors_against_individuals_db(individualName)
 
 @app.route('/delete_all_table_data', methods=['DELETE'])
 def delete_all_table_data():

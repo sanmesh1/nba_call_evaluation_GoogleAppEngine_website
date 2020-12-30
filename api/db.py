@@ -91,6 +91,20 @@ def get_game_referee_info_filtered(filter_type, filter_param):
     conn.close()
     return got_game_referee_info
 
+    
+def get_plays_of_errors_against_individuals_db(individualName):
+    conn = open_connection()
+    with conn.cursor() as cursor:
+        #SELECT * FROM main_refereeV3 WHERE (disadvantaged_player = 'Luka Doncic' AND review_decision = 'INC') OR (committing_player = 'Luka Doncic' AND review_decision = 'IC');
+        result = cursor.execute('SELECT * FROM ' + tableName + ' WHERE (disadvantaged_player = \'' + individualName +'\' AND review_decision = \'INC\') OR (committing_player = \''+ individualName +'\' AND review_decision = \'IC\');')
+        game_referee_info = cursor.fetchall()
+        if result > 0:
+            got_game_referee_info = jsonify(game_referee_info)
+        else:
+            got_game_referee_info = 'No plays match parameters'
+    conn.close()
+    return got_game_referee_info
+    
 def delete_all_table_data_db():
     conn = open_connection()
     with conn.cursor() as cursor:
