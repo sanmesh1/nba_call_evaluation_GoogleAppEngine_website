@@ -6,6 +6,7 @@ import scottFosterAwakenedMedium from './images/scottFosterAwakenedMedium.jpg';
 import './assets/css/main.css';
 import './assets/css/font-awesome.min.css';
 import SortingTableComponent from './components/basic.table';
+import ErrorTableComponent from './components/basic.tableErrorsAgainstTable';
 import { Chart } from "react-google-charts";
 import ScriptTag from 'react-script-tag';
 // import './assets/js/jquery.min.js';
@@ -55,26 +56,16 @@ class RefereeingUI extends React.Component {
 			cheating: {disadvantaged: null, commiting: null, totalPercentage: null},
 			protecting: {disadvantaged: null, commiting: null, totalPercentage: null},
 			percentErrorsAgainstVsNumErrorsAgainst: [],
-			incorrectCallsTableForIndividualJsonOutputObject: [{
-				"Committing_CC": "",
-				"Committing_CNC": "",
-				"Committing_IC": "",
-				"Committing_INC": "",
-				"Disadvantaged_CC": "",
-				"Disadvantaged_CNC": "",
-				"Disadvantaged_IC": "",
-				"Disadvantaged_INC": "",
-				"PlayerName": "",
-				"num_errors_against": "",
-				"num_errors_in_favor": "",
-				"percent_errors_against": "",
-				"percent_errors_in_favor": ""
-			}],
+			incorrectCallsTableForIndividualJsonOutputObject: [],
+			videoTagUrl: "",
 		};
 		this.callApi = this.callApi.bind(this);
 		this.handleChangeTeamOrPlayerName = this.handleChangeTeamOrPlayerName.bind(this);
 		this.handleChangeTeamOrPlayer = this.handleChangeTeamOrPlayer.bind(this);
 		this.getSpecificPlayerDetails = this.getSpecificPlayerDetails.bind(this);
+		this.getJsonFromWebApi = this.getJsonFromWebApi.bind(this);
+		this.openVideo = this.openVideo.bind(this);
+		this.doNothingEvent = this.doNothingEvent.bind(this);
 /////
 		const apiUrl = 'https://original-spider-273806.ue.r.appspot.com/get_player_referee_accuracies_data';
 		fetch(apiUrl)
@@ -229,6 +220,19 @@ class RefereeingUI extends React.Component {
 		});
 	}
 	
+	getJsonFromWebApi(webApiUrl) {
+		fetch(webApiUrl)
+		.then((response) => 
+		response.json()
+		)
+		.then((data) => {
+			// console.log('This is your data', data);
+			// console.log(typeof data);
+			// console.log(Object.getOwnPropertyNames(data));
+			JSON.parse(JSON.stringify(data));
+		});		
+	}
+	
 	getSpecificPlayerDetails(player_referee_accuracies_object){
 		console.log(player_referee_accuracies_object.PlayerName);
 		
@@ -248,15 +252,121 @@ class RefereeingUI extends React.Component {
 				percentErrorsAgainstVsNumErrorsAgainst_temp.push([currentValue.num_errors_against, currentValue.percent_errors_against, 'blue', str.concat("player = ", currentValue.PlayerName, ", num = ", currentValue.num_errors_against.toString(), ", % = ", currentValue.percent_errors_against.toString())]);
 			}
 		});
+		///////////
+		var webApiUrl = '';
+		var nameWithSpacesMadeUrlFriendly = player_referee_accuracies_object.PlayerName;
+		nameWithSpacesMadeUrlFriendly = nameWithSpacesMadeUrlFriendly.replace(/\s/g, '%20');
+		webApiUrl = webApiUrl.concat('https://original-spider-273806.ue.r.appspot.com/get_plays_of_errors_against_individuals/', nameWithSpacesMadeUrlFriendly);
+		// let data = this.getJsonFromWebApi(webApiUrl);
 		
+		fetch(webApiUrl)
+		.then((response) => 
+		response.json()
+		)
+		.then((data) => {
+			// console.log('This is your data', data);
+			// console.log(typeof data);
+			// console.log(Object.getOwnPropertyNames(data));
+			data = JSON.parse(JSON.stringify(data));
+		
+			console.log("out of getJson function");
+			console.log(data);
+			
+			// var incorrectCallsTableForIndividualJsonOutputObject_temp = {
+				// "GameDetails": "",
+				// "CallType": "",
+				// "committing_player": "",
+				// "disadvantaged_player": "",
+				// "review_decision": "",
+				// "linkTo2minReport": "",
+				// "video_link": "",
+			// };
+			//////////
+			
+			console.log("Testing concat")
+			data.slice().reverse().forEach(function(element2, index, object) {
+				var gameDate = element2.GameDate.substring(0, 10);
+				var Home_team = element2.Home_team;
+				var Away_team = element2.Away_team;
+				var HomeTeamScore = element2.HomeTeamScore;
+				var VisitorTeamScore = element2.VisitorTeamScore;
+				var GameDetails= "";
+				GameDetails = GameDetails.concat(gameDate,"\n", Home_team, " @ ",  Away_team, ": ", HomeTeamScore, "-", VisitorTeamScore);
+				console.log(GameDetails)
+				element2.GameDetails = GameDetails;
+			});
+			
+			this.setState({
+				percentErrorsAgainstVsNumErrorsAgainst: percentErrorsAgainstVsNumErrorsAgainst_temp,
+				teamOrPlayerName: player_referee_accuracies_object.PlayerName,
+				incorrectCallsTableForIndividualJsonOutputObject: data,
+			});
+			///
+			
+			
+			///
+			var elmnt = document.getElementById("RefereeingInput");
+			elmnt.scrollIntoView();
+		});		
+		
+		
+	}
+	
+	openVideo(object){
+		console.log(object.video_link);
+		var video_link = object.video_link;
+		var stringToFind = "gameNo=";
+		var indexOfFirst = video_link.indexOf(stringToFind)+stringToFind.length;
+		var gameId = video_link.substr(indexOfFirst,10);
+		
+		stringToFind = "eventNum=";
+		indexOfFirst = video_link.indexOf(stringToFind)+stringToFind.length;
+		var playId = video_link.substr(indexOfFirst);
+		
+		console.log("gameId")
+		console.log(gameId)
+		console.log("playId")
+		console.log(playId)
+		
+		var videoTagUrl_temp = "";
+		videoTagUrl_temp = videoTagUrl_temp.concat("https://ak-static.cms.nba.com/wp-content/uploads/referee-clips/", gameId, "_", playId, "_DF%20BCAST_1509kbps.mp4")
+		console.log("videoTagUrl_temp")
+		console.log(videoTagUrl_temp)
 		this.setState({
-			percentErrorsAgainstVsNumErrorsAgainst: percentErrorsAgainstVsNumErrorsAgainst_temp,
-			teamOrPlayerName: player_referee_accuracies_object.PlayerName
+			videoTagUrl: videoTagUrl_temp,
 		});
 		
-		var elmnt = document.getElementById("RefereeingInput");
-		elmnt.scrollIntoView();
-		
+		var video = document.getElementById('videoTest');
+		video.innerHTML = '';
+		var source = document.createElement('source');
+		video.pause();
+		source.setAttribute('src', videoTagUrl_temp);
+		video.appendChild(source);
+		video.load();
+		video.play();
+
+		// function videoLoad(urlVideoLink)
+		// {
+			// video.pause();
+
+			// source.setAttribute('src', urlVideoLink); 
+
+			// video.load();
+			// video.play();
+		// }
+		// setTimeout(videoLoad.bind(null, videoTagUrl_temp), 3000);
+		// setTimeout(function() {  
+			// video.pause();
+
+			// source.setAttribute('src', "https://ak-static.cms.nba.com/wp-content/uploads/referee-clips/0021801109_2267_DF%20BCAST_1509kbps.mp4"); 
+
+			// video.load();
+			// video.play();
+		// }, 3000);
+	}
+	
+	doNothingEvent(event){
+		console.log("doNothingEvent");
 	}
 	
   render() {
@@ -283,7 +393,10 @@ class RefereeingUI extends React.Component {
 				*/}
 			</div>
 			<div className="RefereeingAccuracyOutput">
-				<Greeting isLoggedIn={this.state.percentErrorsAgainstVsNumErrorsAgainst} playerTeamName = {this.state.teamOrPlayerName}/>
+				<Greeting isLoggedIn={this.state.percentErrorsAgainstVsNumErrorsAgainst} playerTeamName = {this.state.teamOrPlayerName}
+				clickOnRowFunc={this.openVideo} submitButtonEvent={this.getSpecificPlayerDetails} onChangeTextboxFunc={this.doNothingEvent} 
+				onChangeFunc={this.doNothingEvent} data={this.state.incorrectCallsTableForIndividualJsonOutputObject}
+				videoTagUrl={this.state.videoTagUrl}/>
 			</div>
 		</div>
 	);
@@ -293,7 +406,7 @@ class RefereeingUI extends React.Component {
 function Greeting(props) {
   const isLoggedIn = props.isLoggedIn;
   console.log("Function Greeting")
-  console.log(isLoggedIn)
+  console.log(props.videoTagUrl)
   if (isLoggedIn !== undefined && isLoggedIn.length !== 0) {
     return (
 		<div>
@@ -313,6 +426,28 @@ function Greeting(props) {
 			  }}
 			  rootProps={{ 'data-testid': '1' }}
 			/>
+			<div>
+				<h1> Detail on Referee Mistakes Against Individuals. </h1>
+			</div>
+			<div className="ErrorTableComponent">
+				<ErrorTableComponent clickOnRowFunc={props.clickOnRowFunc} submitButtonEvent={props.submitButtonEvent} 
+				onChangeTextboxFunc={props.onChangeTextboxFunc} onChangeFunc={props.onChangeFunc} 
+				data={props.data}/>
+			</div>
+			{/*
+			<video width="640" height="480" controls>
+				<source src={props.videoTagUrl} type="video/mp4"/>
+				Your browser does not support the video tag.
+			</video>
+			*/}
+			{/*
+			<video controls autoPlay loop muted>
+				<source src={"https://ak-static.cms.nba.com/wp-content/uploads/referee-clips/0021801109_2267_DF%20BCAST_1509kbps.mp4"} type="video/mp4" />
+			</video>
+			*/}
+			<video id="videoTest" controls autoPlay loop muted>
+			{/*<source src={props.videoTagUrl} type="video/mp4" />*/}
+			</video>
 		</div>
 	);
   }
