@@ -4,6 +4,14 @@ import React from "react";
 import { useTable, useSortBy, usePagination, useFilters, useGlobalFilter, useAsyncDebounce} from 'react-table'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+const divStyle = {
+	background: 'none',
+	border: 'none',
+	color: '#FFF',
+	// font-family: 'Verdana, Geneva, sans-serif',
+	cursor: 'pointer'
+};
+
 // Define a default UI for filtering
 function GlobalFilter({
     preGlobalFilteredRows,
@@ -117,7 +125,7 @@ function Table({ clickOnRowFunc, columns, data, onChangeFunc, stateOfDropdown, o
                 </code>
             </pre>
 		*/}
-		    <select className="teamOrPlayer" value={stateOfDropdown} onChange={onChangeFunc} style={{ width: '80px', height: '40px' }}>
+		    <select id="more" class="button1" className="teamOrPlayer" value={stateOfDropdown} onChange={onChangeFunc} style={{ width: '80px', height: '40px' }}>
 				<option value="Player">Player</option>
 				<option value="Team">Team</option>
 			</select>
@@ -132,8 +140,10 @@ function Table({ clickOnRowFunc, columns, data, onChangeFunc, stateOfDropdown, o
 				Submit
 			</button>
 			*/}
+			<p></p>
+			<p><strong>CLICK ON A TABLE ROW FOR DETAILS</strong></p>
             <table className="table" {...getTableProps()}>
-                <thead>
+				<thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (

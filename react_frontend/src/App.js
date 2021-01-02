@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import logo from './logo.svg';
 import scottFosterCp3 from './images/scottFosterCp3.jpg';
 import scottFosterAwakenedMedium from './images/scottFosterAwakenedMedium.jpg';
+import instructionVideo from './images/instructionVideo2.mp4';
 //import './App.css';
 import './assets/css/main.css';
 import './assets/css/font-awesome.min.css';
@@ -15,6 +16,11 @@ import ScriptTag from 'react-script-tag';
 // import './assets/js/skel.min.js';
 // import './assets/js/util.js';
 // import './assets/js/main.js';
+
+// const divStyle = {
+  // margin: '40px',
+  // border: '5px solid pink'
+// };
 
 class RefereeingUI extends React.Component {
 	constructor(props){
@@ -51,7 +57,7 @@ class RefereeingUI extends React.Component {
 				"percent_errors_in_favor": ""
 			}],
 			counter: 0,
-			teamOrPlayer: "Player",
+			teamOrPlayer: "Team",
 			teamOrPlayerName: "",
 			cheating: {disadvantaged: null, commiting: null, totalPercentage: null},
 			protecting: {disadvantaged: null, commiting: null, totalPercentage: null},
@@ -453,7 +459,9 @@ function Greeting(props) {
   }
   else{
 	return (
-		"Nothing"
+		<div>
+		<h1>Click on a row of table above with non-zero errors-against, in order to see below, details of the bias and calls made against player/team</h1>
+		</div>
 	);
   }
 }
@@ -597,21 +605,32 @@ class App extends Component {
 					
 						{/*<!-- Section -->*/}
 							<div id="TableInput">
-							<section class="wrapper style1">
-								<div class="inner">
-									{/*<!-- 2 Columns -->*/}
-											<h3>Referee Bias Exploration</h3>
-											<strong>
-												<li>Make a selection of Player or Team in the dropdown below to update table.</li>
-												<li>Click on a table row to see referee details on a particular team/player</li>
-												<li>Sort table by any of column fields by clicking on it</li>
-												<li>Filter for specific team/player be entering name in box below</li>
-											</strong>
-											<div className="App">
-												<RefereeingUI > </RefereeingUI >
+								<section class="wrapper style1">
+									<div class="inner">
+										<div class="flex flex-3">
+											{/*<!-- 2 Columns -->*/}
+											<div class="col col1 first">
+												<h2>Referee Bias Exploration</h2>
+												<strong>
+													<h3><li>Make a selection of Player or Team in the dropdown below to update table.</li></h3>
+													<h3><li>Click on a table row to see referee details on a particular team/player</li></h3>
+													<h3><li>Sort table by any of column fields by clicking on it</li></h3>
+													<h3><li>Filter for specific team/player be entering name in box below</li></h3>
+												</strong>
 											</div>
-								</div>
-							</section>
+											<div class="col col2">
+												<h3>Video showing how to navigate website</h3>
+												<video controls width="640" height="350">
+													<source src={instructionVideo} type="video/mp4" />
+												</video>
+											</div>
+										</div>
+									<div className="App">
+										<RefereeingUI > </RefereeingUI >
+									</div>
+									
+									</div>
+								</section>
 							</div>
 						{/*<!-- Section -->*/}
 							<section class="wrapper style1">

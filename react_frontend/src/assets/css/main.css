@@ -10,6 +10,20 @@
 
 /* Reset */
 
+	 {
+	  //background:none;
+	  //border:none;
+	  //color:#FFF;
+	  font-family:Verdana, Geneva, sans-serif;
+	  cursor:pointer;
+	}
+	
+	select:hover {
+		background-color: #4CAF50;
+		color: white;
+		cursor:pointer;
+	}
+
 	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
 		margin: 0;
 		padding: 0;
@@ -2799,7 +2813,7 @@
 			border-left: 0;
 			border-right: 0;
 		}
-
+		
 		table td {
 			padding: 0.75em 0.75em;
 		}
@@ -2850,9 +2864,16 @@
 	}
 
 		table tbody tr:nth-child(2n + 1) {
-			background-color: rgba(0, 0, 0, 0.075);
+			background-color: rgba(0, 0, 0, 0.075); 
 		}
 
+	
+	table tbody tr:hover {
+          background-color: #ffff99;
+		  cursor: pointer;
+    } 
+	
+	
 	table th {
 		color: #000;
 	}
@@ -3090,6 +3111,11 @@
 				.wrapper.style1 table tbody tr:nth-child(2n + 1) {
 					background-color: rgba(0, 0, 0, 0.075);
 				}
+				
+				.wrapper.style1  table tbody tr:hover {
+					background-color: #ffff99;
+					cursor: pointer;
+				} 
 
 			.wrapper.style1 table th {
 				color: #000;
@@ -3302,6 +3328,11 @@
 				.wrapper.style2 table tbody tr:nth-child(2n + 1) {
 					background-color: rgba(255, 255, 255, 0.075);
 				}
+				
+				.wrapper.style2 table tbody tr:hover {
+					background-color: #ffff99;
+					cursor: pointer;
+				} 
 
 			.wrapper.style2 table th {
 				color: #fff;
@@ -3948,3 +3979,9 @@
 			}
 
 		}
+		
+	select:hover {
+		background-color: #4CAF50;
+		color: white;
+		cursor:pointer;
+	}

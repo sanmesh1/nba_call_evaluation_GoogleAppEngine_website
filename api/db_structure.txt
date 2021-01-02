@@ -1,3 +1,14 @@
+Table of incorrect calls()
+gamedate, teams, and score
+CallType
+commiting player
+disadvantaged player
+review_decision
+linkTo2minReport
+video_link (or maybe when click on row, it opens video below)
+
+
+
 create table main_refereeV3(
 UniqueIdPlay VARCHAR(255),
 GameId INT UNSIGNED,
